@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "文字马赛克插件",
+  "version": "1.0.0",
+  "description": "为网页文字添加马赛克效果，支持多种样式和强度调节",
+  "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "文字马赛克插件",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contents/index.js"],
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["contents/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

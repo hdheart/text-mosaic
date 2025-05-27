@@ -1,33 +1,67 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Text Mosaic Extension
 
-## Getting Started
+一个简单而强大的文字马赛克浏览器插件，让你可以优雅地保护敏感文字信息。
 
-First, run the development server:
+## 功能特点
+
+- 🎭 多种马赛克样式
+  - 模糊效果
+  - 像素化
+  - 方块
+  - 波浪
+
+- 🎯 智能范围显示
+  - 鼠标移动到文字上可以显示范围内的内容
+  - 可调节显示范围（50-400px）
+
+- ⚡ 平滑过渡效果
+  - 可自定义显示过渡时间
+  - 可自定义隐藏延迟时间
+  - 流畅的动画效果
+
+- 🛠️ 便捷操作
+  - 一键清除所有马赛克
+  - 一键恢复所有马赛克
+  - 实时强度调节
+
+## 安装方法
+
+1. 下载本仓库代码
+2. 打开 Chrome 扩展程序页面 (chrome://extensions/)
+3. 开启开发者模式
+4. 点击"加载已解压的扩展程序"
+5. 选择本仓库的目录
+
+## 使用方法
+
+1. 安装插件后，点击工具栏中的插件图标打开设置面板
+2. 选择喜欢的马赛克样式
+3. 调整强度、范围和过渡时间
+4. 将鼠标移动到文字上即可查看内容
+
+## 开发
 
 ```bash
-pnpm dev
-# or
+# 安装依赖
+npm install
+
+# 开发模式
 npm run dev
-```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
-
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
-
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
-
-## Making production build
-
-Run the following:
-
-```bash
-pnpm build
-# or
+# 构建
 npm run build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+## 技术栈
 
-## Submit to the webstores
+- React
+- TypeScript
+- Plasmo Framework
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 许可证
+
+MIT License
