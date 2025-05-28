@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import "./popup.css"
 
 // 马赛克样式类型
-type MosaicStyle = "blur" | "pixelate" | "block" | "wave"
+type MosaicStyle = "blur" | "pixelate"
 
 interface Settings {
   isEnabled: boolean
@@ -96,9 +96,7 @@ function IndexPopup() {
 
   const styleOptions = [
     { value: "blur" as MosaicStyle, label: "模糊", icon: "🔍" },
-    { value: "pixelate" as MosaicStyle, label: "像素化", icon: "🎮" },
-    { value: "block" as MosaicStyle, label: "方块", icon: "⬛" },
-    { value: "wave" as MosaicStyle, label: "波浪", icon: "🌊" }
+    { value: "pixelate" as MosaicStyle, label: "像素化", icon: "🎮" }
   ]
 
   return (

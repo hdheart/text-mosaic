@@ -6,7 +6,7 @@ export const config: PlasmoCSConfig = {
 }
 
 // 马赛克样式类型
-type MosaicStyle = "blur" | "pixelate" | "block" | "wave"
+type MosaicStyle = "blur" | "pixelate"
 
 interface Settings {
   isEnabled: boolean
@@ -442,15 +442,6 @@ class TextMosaicManager {
         element.style.filter = `blur(${intensity * 0.5}px)`
         element.style.imageRendering = "pixelated"
         break
-      case "block":
-        element.style.backgroundColor = "#333"
-        element.style.color = "transparent"
-        element.style.borderRadius = "2px"
-        break
-      case "wave":
-        element.style.filter = `blur(${intensity * 0.8}px)`
-        element.style.textShadow = `${intensity}px 0 0 currentColor, -${intensity}px 0 0 currentColor`
-        break
     }
   }
 
@@ -539,26 +530,6 @@ class TextMosaicManager {
         image-rendering: -webkit-crisp-edges;
         image-rendering: pixelated;
         image-rendering: crisp-edges;
-      }
-      
-      .mosaic-block {
-        background: linear-gradient(45deg, #333 25%, #555 25%, #555 50%, #333 50%, #333 75%, #555 75%);
-        background-size: 4px 4px;
-        animation: mosaic-slide 2s linear infinite;
-      }
-      
-      .mosaic-wave {
-        animation: mosaic-wave 1s ease-in-out infinite alternate;
-      }
-      
-      @keyframes mosaic-slide {
-        0% { background-position: 0 0; }
-        100% { background-position: 8px 8px; }
-      }
-      
-      @keyframes mosaic-wave {
-        0% { transform: skew(0deg); }
-        100% { transform: skew(2deg); }
       }
     `
 
