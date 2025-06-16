@@ -509,7 +509,6 @@ class TextMosaicManager {
     style.id = "text-mosaic-styles"
     style.textContent = `
       .text-mosaic-wrapper {
-        cursor: pointer;
         position: relative;
         display: inline;
         will-change: filter, color, background-color, text-shadow;
