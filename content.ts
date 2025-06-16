@@ -28,8 +28,11 @@ class TextMosaicManager {
   }
 
   private mosaicElements: Set<HTMLElement> = new Set()
+  private boundHandleMouseMove: (event: MouseEvent) => void
 
   constructor() {
+    // 在构造函数中绑定事件处理函数
+    this.boundHandleMouseMove = this.handleMouseMove.bind(this)
     this.init()
   }
 
@@ -39,17 +42,6 @@ class TextMosaicManager {
 
     // 添加样式
     this.injectStyles()
-
-    // 确保设置已经完全加载后再处理页面
-    setTimeout(() => {
-      // 自动处理页面文本
-      if (this.settings.isEnabled) {
-        this.autoProcessPageText()
-      }
-
-      // 添加鼠标移动事件监听
-      document.addEventListener('mousemove', this.handleMouseMove.bind(this))
-    }, 0)
 
     // 监听消息
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -61,12 +53,16 @@ class TextMosaicManager {
           // 如果是禁用状态，直接清除所有马赛克
           if (!this.settings.isEnabled) {
             this.clearAllMosaics()
+            // 移除鼠标移动事件监听
+            document.removeEventListener('mousemove', this.boundHandleMouseMove)
             return
           }
 
           // 如果之前是禁用状态，现在启用了，重新创建所有马赛克
           if (!oldSettings.isEnabled && this.settings.isEnabled) {
             this.autoProcessPageText()
+            // 添加鼠标移动事件监听
+            document.addEventListener('mousemove', this.boundHandleMouseMove)
             return
           }
 
@@ -100,6 +96,11 @@ class TextMosaicManager {
             showDuration: result.mosaicSettings.showDuration ?? 300,
             hideDuration: result.mosaicSettings.hideDuration ?? 500
           }
+        }
+        // 根据设置决定是否初始化
+        if (this.settings.isEnabled) {
+          this.autoProcessPageText()
+          document.addEventListener('mousemove', this.boundHandleMouseMove)
         }
         resolve()
       })
