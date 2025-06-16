@@ -16,6 +16,7 @@ A simple yet powerful text mosaic browser extension that elegantly protects sens
   - Mouse position-based text reveal
   - Adjustable display radius (50-400px)
   - Smooth show/hide transitions
+  - Maintains display state during page scroll
 
 - ⚡ Smooth Animations
   - Customizable show transition time
