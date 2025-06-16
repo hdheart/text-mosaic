@@ -29,10 +29,13 @@ class TextMosaicManager {
 
   private mosaicElements: Set<HTMLElement> = new Set()
   private boundHandleMouseMove: (event: MouseEvent) => void
+  private boundHandleScroll: () => void
+  private lastMousePosition: { x: number; y: number } | null = null
 
   constructor() {
     // 在构造函数中绑定事件处理函数
     this.boundHandleMouseMove = this.handleMouseMove.bind(this)
+    this.boundHandleScroll = this.handleScroll.bind(this)
     this.init()
   }
 
@@ -53,16 +56,19 @@ class TextMosaicManager {
           // 如果是禁用状态，直接清除所有马赛克
           if (!this.settings.isEnabled) {
             this.clearAllMosaics()
-            // 移除鼠标移动事件监听
+            // 移除事件监听
             document.removeEventListener('mousemove', this.boundHandleMouseMove)
+            document.removeEventListener('scroll', this.boundHandleScroll, true)
+            this.lastMousePosition = null
             return
           }
 
           // 如果之前是禁用状态，现在启用了，重新创建所有马赛克
           if (!oldSettings.isEnabled && this.settings.isEnabled) {
             this.autoProcessPageText()
-            // 添加鼠标移动事件监听
+            // 添加事件监听
             document.addEventListener('mousemove', this.boundHandleMouseMove)
+            document.addEventListener('scroll', this.boundHandleScroll, true)
             return
           }
 
@@ -101,6 +107,7 @@ class TextMosaicManager {
         if (this.settings.isEnabled) {
           this.autoProcessPageText()
           document.addEventListener('mousemove', this.boundHandleMouseMove)
+          document.addEventListener('scroll', this.boundHandleScroll, true)
         }
         resolve()
       })
@@ -329,9 +336,23 @@ class TextMosaicManager {
   private handleMouseMove(event: MouseEvent) {
     if (!this.settings.isEnabled) return
 
-    const mouseX = event.clientX
-    const mouseY = event.clientY
+    // 保存鼠标位置
+    this.lastMousePosition = {
+      x: event.clientX,
+      y: event.clientY
+    }
 
+    this.updateMosaicVisibility(event.clientX, event.clientY)
+  }
+
+  private handleScroll() {
+    if (!this.settings.isEnabled || !this.lastMousePosition) return
+
+    // 使用最后记录的鼠标位置更新马赛克显示状态
+    this.updateMosaicVisibility(this.lastMousePosition.x, this.lastMousePosition.y)
+  }
+
+  private updateMosaicVisibility(mouseX: number, mouseY: number) {
     this.mosaicElements.forEach(mosaicElement => {
       const rect = mosaicElement.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
