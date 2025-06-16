@@ -33,20 +33,23 @@ class TextMosaicManager {
     this.init()
   }
 
-  private async init() {
+  private init() {
     // 加载设置
-    await this.loadSettings()
+    this.loadSettings()
 
     // 添加样式
     this.injectStyles()
 
     // 确保设置已经完全加载后再处理页面
-    await new Promise(resolve => setTimeout(resolve, 0))
+    setTimeout(() => {
+      // 自动处理页面文本
+      if (this.settings.isEnabled) {
+        this.autoProcessPageText()
+      }
 
-    // 自动处理页面文本
-    if (this.settings.isEnabled) {
-      this.autoProcessPageText()
-    }
+      // 添加鼠标移动事件监听
+      document.addEventListener('mousemove', this.handleMouseMove.bind(this))
+    }, 0)
 
     // 监听消息
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -322,59 +325,34 @@ class TextMosaicManager {
     }
   }
 
-  private temporarilyRevealMosaic(element: HTMLElement) {
-    // 获取当前元素的位置信息
-    const rect = element.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
+  private handleMouseMove(event: MouseEvent) {
+    if (!this.settings.isEnabled) return
 
-    // 查找范围内的所有马赛克元素
+    const mouseX = event.clientX
+    const mouseY = event.clientY
+
     this.mosaicElements.forEach(mosaicElement => {
-      const mosaicRect = mosaicElement.getBoundingClientRect()
-      const mosaicCenterX = mosaicRect.left + mosaicRect.width / 2
-      const mosaicCenterY = mosaicRect.top + mosaicRect.height / 2
+      const rect = mosaicElement.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
 
-      // 计算与中心点的距离
+      // 计算与鼠标的距离
       const distance = Math.sqrt(
-        Math.pow(centerX - mosaicCenterX, 2) +
-        Math.pow(centerY - mosaicCenterY, 2)
+        Math.pow(mouseX - centerX, 2) +
+        Math.pow(mouseY - centerY, 2)
       )
 
-      // 如果在范围内，显示内容
+      // 如果在显示半径内，显示内容
       if (distance <= this.settings.revealRadius) {
         this.revealElement(mosaicElement)
-      }
-    })
-  }
-
-  private restoreMosaic(element: HTMLElement) {
-    // 恢复范围内所有的马赛克元素
-    this.mosaicElements.forEach(mosaicElement => {
-      // 清除可能存在的定时器
-      const timerId = mosaicElement.getAttribute('data-timer-id')
-      if (timerId) {
-        clearTimeout(parseInt(timerId))
-      }
-
-      // 设置新的定时器
-      const timer = setTimeout(() => {
+      } else {
         this.restoreElement(mosaicElement)
-      }, this.settings.hideDuration)
-
-      // 保存定时器ID
-      mosaicElement.setAttribute('data-timer-id', timer.toString())
+      }
     })
   }
 
   private revealElement(element: HTMLElement) {
     if (element.hasAttribute('data-revealed')) return
-
-    // 清除可能存在的定时器
-    const timerId = element.getAttribute('data-timer-id')
-    if (timerId) {
-      clearTimeout(parseInt(timerId))
-      element.removeAttribute('data-timer-id')
-    }
 
     // 保存当前的马赛克样式
     const style = element.getAttribute("data-mosaic-style")
@@ -411,9 +389,8 @@ class TextMosaicManager {
       this.applyMosaicStyle(element)
     }
 
-    // 移除已显示标记和定时器ID
+    // 移除已显示标记
     element.removeAttribute('data-revealed')
-    element.removeAttribute('data-timer-id')
   }
 
   private applyMosaicStyle(element: HTMLElement) {
@@ -562,13 +539,8 @@ class TextMosaicManager {
   }
 
   private ensureEventListeners(element: HTMLElement) {
-    // 移除现有的事件监听器（如果有）
-    element.removeEventListener("mouseenter", () => this.temporarilyRevealMosaic(element))
-    element.removeEventListener("mouseleave", () => this.restoreMosaic(element))
-    
-    // 添加新的事件监听器
-    element.addEventListener("mouseenter", () => this.temporarilyRevealMosaic(element))
-    element.addEventListener("mouseleave", () => this.restoreMosaic(element))
+    // 由于我们现在使用全局鼠标移动事件，这个方法不再需要做任何事情
+    return
   }
 }
 
